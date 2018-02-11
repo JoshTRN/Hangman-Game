@@ -23,6 +23,7 @@ var getSpaces = function(word) {
 }
 
 //getSpaces(word)
+
 // Create a tracker for all unsuccessful letters guessed.
 var failedGuess = ''
 
@@ -40,7 +41,7 @@ var indexFinder = function (word, letter) {
 	indexLst = []
 
 	for (var i = 0; i < word.length; ) {
-		if (word[i] === letter) {
+		if (word[i].toLowerCase === letter) {
 			indexLst.push(i)
 			i++
 		}
@@ -51,7 +52,12 @@ var indexFinder = function (word, letter) {
 	return indexLst
 }
 
-
+var replaceSpaces = function (indexLst, spaces, letter) {
+	for (var i = 0; i < indexLst.length; i++) {
+		spaces[indexLst[i] * 2] = letter
+	}
+	return spaces
+}
 
 // If user guesses incorrect letter, add to tracker of unsuccessful letters guessed
 // add a body part to the hangman, decrease attempts left by 1.
@@ -63,4 +69,3 @@ var indexFinder = function (word, letter) {
 
 
 // function for returning indices of letter in word.
-}
