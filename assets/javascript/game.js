@@ -14,11 +14,10 @@ var x = document.getElementsByClassName("btnChoice");
 // Create a simple for loop that generates the 
 // underscores "_ _ _ _"  for the length of the word. Call this "getSpaces"
 var getSpaces = function(word) {
-	var spaces = ''
-	for (var i = 0; i < (word.length - 1); i++) {
-		spaces += '_ '
+	var spaces = []
+	for (var i = 0; i < (word.length); i++) {
+		spaces.push('_')
 	}
-	spaces += '_'
 	return spaces
 }
 
@@ -41,7 +40,7 @@ var indexFinder = function (word, letter) {
 	indexLst = []
 
 	for (var i = 0; i < word.length; ) {
-		if (word[i].toLowerCase === letter) {
+		if (word[i] === letter) {
 			indexLst.push(i)
 			i++
 		}
@@ -52,11 +51,10 @@ var indexFinder = function (word, letter) {
 	return indexLst
 }
 
-var replaceSpaces = function (indexLst, spaces, letter) {
+var fillSpaces = function(spaceList, indexLst, letter) {
 	for (var i = 0; i < indexLst.length; i++) {
-		spaces[indexLst[i] * 2] = letter
+		spaceList[indexLst[i]] = letter
 	}
-	return spaces
 }
 
 // If user guesses incorrect letter, add to tracker of unsuccessful letters guessed
