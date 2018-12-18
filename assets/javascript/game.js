@@ -1,69 +1,108 @@
-// Create a list of lists of words by topic.
-var fullList = [["Animals As Leaders", "Helix Nebula", "Planet X"], [
-"Spider-Man", "Fight Club:", "Green Mile"]]
-	//contains sublists [1] = Music, [2] = Movies
-
-// Create a topic selector for player by way of button.
-// when user click topic, randomly generate word from that list.
-var x = document.getElementsByClassName("btnChoice");
-	
 
 
-// Select random word from said list.
+$(document).ready(function () {
 
-// Create a simple for loop that generates the 
-// underscores "_ _ _ _"  for the length of the word. Call this "getSpaces"
-var getSpaces = function(word) {
-	var spaces = []
-	for (var i = 0; i < (word.length); i++) {
-		spaces.push('_')
-	}
-	return spaces
-}
-
-//getSpaces(word)
-
-// Create a tracker for all unsuccessful letters guessed.
-var failedGuess = ''
-
-document.onkeyup = function(event) {
-
-      // Determines which key was pressed.
-      var userGuess = event.key;
+  let theme = "";
+  let word = "";
+  let guessArray = [];
+  let wrongGuesses = [];
+  let guessLeft = 6;
 
 
-// If user guesses a letter in the word, find the index(s) of that letter in that word
-// and replace the underscores at corresponding index(s) with that letter.
+  const themes = {
+    philosophy: {
+      genre: {
+        positions: ["direct realism", "nihilism", "atheism"],
+        philosophers: ["David Chalmers", "Akeel Bilgrami", "Karl Marx"]
+      },
+      background: [
+        "assets/images/philosophy.png",
+        "assets/images/philosophy.jpg",
+        "assets/images/Thinker.jpg"
+      ],
+      themeMusic: '',
+    },
+    movies: {
+      genre: {
+        action: [],
+        comedy: [],
+        horror: []
+      },
+      background: ["assets/images/movie1.png", "assets/images/movie2.jpg"],
+      themeMusic: ""
+    },
+    music: {
+      genre: {
+        metal: [],
+        rap: [],
+      }
+    }
+  };
 
-var indexFinder = function (word, letter) {
+  for (const key in themes) {
+    let str = key.charAt(0).toUpperCase() + key.slice(1);
+    let button = $(
+      `<button class="theme-button btn btn-lg btn-success">${str}</button>`
+    );
+    $("#buttons").append(button);
+  }
 
-	indexLst = []
+  $(".theme-button").on("click", function () {
 
-	for (var i = 0; i < word.length; ) {
-		if (word[i] === letter) {
-			indexLst.push(i)
-			i++
-		}
-		else {
-			i++
-		}
-	}
-	return indexLst
-}
+    theme = $(this)[0].innerHTML;
+    $("#header").text(`${theme} Hangman!`);
+    theme = theme.toLowerCase();
+    let randomPic = themes[theme].background[Math.floor(Math.random() * themes[theme].background.length)];
+    let url = `url(${randomPic})`;
+    $("body").css({ backgroundImage: url });
 
-var fillSpaces = function(spaceList, indexLst, letter) {
-	for (var i = 0; i < indexLst.length; i++) {
-		spaceList[indexLst[i]] = letter
-	}
-}
+    $('#buttons').empty();
 
-// If user guesses incorrect letter, add to tracker of unsuccessful letters guessed
-// add a body part to the hangman, decrease attempts left by 1.
-
-// if attempts left == 0 user loses. Display try again screen
-
-// If there are no underscores left in wordString. Display win screen.
+    for (const key in themes[theme].genre) {
+      let str = key.charAt(0).toUpperCase() + key.slice(1);
+      let button = $(`<button class="genre-button btn btn-lg btn-success">${str}</button>`);
+      $("#buttons").append(button);
+    }
+  });
 
 
+  $(document).on('click', '.genre-button', function () {
 
-// function for returning indices of letter in word.
+    $('#buttons').empty();
+    $('#message').text('Guess the word!');
+    let genre = $(this)[0].innerHTML.toLowerCase();
+    let genreArray = themes[theme].genre[genre];
+    word = genreArray[Math.floor(Math.random() * genreArray.length)];
+    console.log(word);
+
+    for (let index in word) {
+      guessArray.push('_')
+    }
+
+    console.log(guessArray);
+
+    let h2 = $('<h1 id="word-spaces">');
+
+    h2.text(guessArray.join(' ').toUpperCase());
+    $('#buttons').append(h2);
+  })
+
+  document.onkeyup = function (event) {
+    let guess = event.key;
+
+    if (word.indexOf(guess) > -1) {
+      for (let i in word) {
+        if (word[i] === guess) {
+          guessArray[i] = guess.toUpperCase()
+        }
+      }
+      $('#word-spaces').text(guessArray.join(' '));
+    } else {
+
+      if (!guessArray.join('').toLowerCase() === word) {
+        wrongGuesses.push(guess)
+        $('#wrong-guesses').text("Already guessed: " + wrongGuesses.join(', '));
+      }
+    }
+  }
+});

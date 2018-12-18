@@ -1,0 +1,17 @@
+body {
+  background: no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+  
+}
+
+.jumbotron {
+    background: rgb(204, 204, 204); /* Fallback for older browsers without RGBA-support */
+    background: rgba(204, 204, 204, 0.8);
+}
+
+#guess-text {
+  margin-top: 100px;
+}
