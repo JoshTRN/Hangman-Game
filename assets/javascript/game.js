@@ -5,9 +5,9 @@ $(document).ready(function () {
   let theme = "";
   let word = "";
   let guessArray = [];
+  let answerArray =[];
   let wrongGuesses = [];
   let guessLeft = 6;
-
 
   const themes = {
     philosophy: {
@@ -24,7 +24,7 @@ $(document).ready(function () {
     },
     movies: {
       genre: {
-        action: [],
+        action: ["This Or That"],
         comedy: [],
         horror: []
       },
@@ -70,20 +70,21 @@ $(document).ready(function () {
 
     $('#buttons').empty();
     $('#message').text('Guess the word!');
+
     let genre = $(this)[0].innerHTML.toLowerCase();
     let genreArray = themes[theme].genre[genre];
-    word = genreArray[Math.floor(Math.random() * genreArray.length)];
+    word = genreArray[Math.floor(Math.random() * genreArray.length)].toLowerCase();
     console.log(word);
 
-    for (let index in word) {
-      guessArray.push('_')
-    }
+    answerArray = word.toLowerCase().split(' ')
+    guessArray = answerArray.map(elem => new Array(elem.length).fill().map(i => i = '_'));
+    answerArray = answerArray.map(elem => elem.split(''));
 
-    console.log(guessArray);
+    let str = guessArray.map(elem => elem.join(' ')).join('\xa0 \xa0');
 
     let h2 = $('<h1 id="word-spaces">');
 
-    h2.text(guessArray.join(' ').toUpperCase());
+    h2.text(str);
     $('#buttons').append(h2);
   })
 
@@ -91,15 +92,20 @@ $(document).ready(function () {
     let guess = event.key;
 
     if (word.indexOf(guess) > -1) {
-      for (let i in word) {
-        if (word[i] === guess) {
-          guessArray[i] = guess.toUpperCase()
+      for (let i in answerArray) {
+        for (let j in answerArray[i]) {
+          console.log(answerArray[i][j], j);
+          if (answerArray[i][j] === guess) {
+            console.log(guessArray[i][j]);;
+            guessArray[i][j] = guess.toUpperCase();
+            console.log(guessArray[i][j]);
+          }
         }
       }
-      $('#word-spaces').text(guessArray.join(' '));
+      $('#word-spaces').text(guessArray.map(elem => elem.join(' ')).join('\xa0 \xa0'));
     } else {
 
-      if (!guessArray.join('').toLowerCase() === word) {
+      if (!guessArray.map(elem => elem.join(' ')).join('\xa0 \xa0') === word) {
         wrongGuesses.push(guess)
         $('#wrong-guesses').text("Already guessed: " + wrongGuesses.join(', '));
       }
