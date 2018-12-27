@@ -2,13 +2,6 @@
 
 $(document).ready(function () {
 
-  let theme = "";
-  let word = "";
-  let guessArray = [];
-  let answerArray =[];
-  let wrongGuesses = [];
-  let guessLeft = 6;
-
   const themes = {
     philosophy: {
       genre: {
@@ -38,6 +31,13 @@ $(document).ready(function () {
       }
     }
   };
+
+  let theme = "";
+  let word = "";
+  let guessArray = [];
+  let answerArray = [];
+  let wrongGuesses = [];
+  let guessLeft = 6;
 
   for (const key in themes) {
     let str = key.charAt(0).toUpperCase() + key.slice(1);
@@ -82,33 +82,53 @@ $(document).ready(function () {
 
     let str = guessArray.map(elem => elem.join(' ')).join('\xa0 \xa0');
 
-    let h2 = $('<h1 id="word-spaces">');
+    let h1 = $('<h1 id="word-spaces">');
 
-    h2.text(str);
-    $('#buttons').append(h2);
+    h1.text(str);
+    $('#buttons').append(h1);
   })
 
   document.onkeyup = function (event) {
+
+    if (guessLeft === 0) return;
+
     let guess = event.key;
 
-    if (word.indexOf(guess) > -1) {
+    if (word.includes(guess)) {
       for (let i in answerArray) {
         for (let j in answerArray[i]) {
-          console.log(answerArray[i][j], j);
           if (answerArray[i][j] === guess) {
-            console.log(guessArray[i][j]);;
             guessArray[i][j] = guess.toUpperCase();
-            console.log(guessArray[i][j]);
           }
         }
       }
       $('#word-spaces').text(guessArray.map(elem => elem.join(' ')).join('\xa0 \xa0'));
-    } else {
+      console.log(guessArray.map(elem => elem.join('').toLowerCase()).join(' '), word);
+      if (guessArray.map(elem => elem.join('').toLowerCase()).join(' ') === word) {
+        $('#message').empty()
+        $('#message').append(`<div class="alert alert-success text-center" role="alert">
+          Congrats! You win!
+          </div>`);
+        }
+      } else {
+        
+        if (!wrongGuesses.includes(guess)) {
+        
+        guessLeft--;
+        $('#guesses-left').text(`Guesses Left: ${guessLeft}`);
+        
+        wrongGuesses.push(guess);
+        $('#wrong-guesses').text( `Already Guessed: ${wrongGuesses.join(', ')}`);
 
-      if (!guessArray.map(elem => elem.join(' ')).join('\xa0 \xa0') === word) {
-        wrongGuesses.push(guess)
-        $('#wrong-guesses').text("Already guessed: " + wrongGuesses.join(', '));
+        if (guessLeft === 0) {
+          $('#message').empty();
+          
+          $('#message').append(`<div class="alert alert-danger text-center" role="alert">
+          Sorry, try again!
+          </div>`);
+        }
       }
     }
   }
+
 });
